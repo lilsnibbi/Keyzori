@@ -75,7 +75,7 @@ bun run dev
 The server applies pending Drizzle migrations during startup. Once running:
 
 | URL | Purpose |
-|  |  |
+| --- | --- |
 | [`http://localhost:3000/health`](http://localhost:3000/health) | Process liveness |
 | [`http://localhost:3000/ready`](http://localhost:3000/ready) | PostgreSQL and Redis readiness |
 | [`http://localhost:3000/docs`](http://localhost:3000/docs) | Interactive Scalar API reference |
@@ -172,7 +172,7 @@ The connection URLs in `apps/server/.env` must be reachable from inside the cont
 <summary><strong>Development and validation</strong></summary>
 
 | Command | Purpose |
-|  |  |
+| --- | --- |
 | `bun run setup` | Install locked dependencies and apply migrations |
 | `bun run dev` | Start the server in watch mode |
 | `bun run build` | Build the server runtime and SDK |
@@ -186,7 +186,7 @@ The connection URLs in `apps/server/.env` must be reachable from inside the cont
 <summary><strong>Server and database</strong></summary>
 
 | Command | Purpose |
-|  |  |
+| --- | --- |
 | `bun run dev:server` | Start the source server in watch mode |
 | `bun run dev:server:binary` | Rebuild and start the compiled server |
 | `bun run build:server` | Compile the server and admin CLI executables |
@@ -203,7 +203,7 @@ The connection URLs in `apps/server/.env` must be reachable from inside the cont
 <summary><strong>CLI and workspace tests</strong></summary>
 
 | Command | Purpose |
-|  |  |
+| --- | --- |
 | `bun run cli:help` | Show all CLI commands |
 | `bun run cli -- <command>` | Run an administrator command |
 | `bun run test:server` | Test the server workspace |
