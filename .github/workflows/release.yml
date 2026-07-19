@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 concurrency:
   group: release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
@@ -114,13 +115,16 @@ jobs:
         run: |
           set -euo pipefail
           image="ghcr.io/${GITHUB_REPOSITORY,,}"
+          commit_sha=$(git rev-parse HEAD)
           echo "name=${image}" >> "${GITHUB_OUTPUT}"
+          echo "commit=${commit_sha}" >> "${GITHUB_OUTPUT}"
           docker build \
             --file apps/server/Dockerfile \
             --label "org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
-            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
+            --label "org.opencontainers.image.revision=${commit_sha}" \
             --label "org.opencontainers.image.version=${RELEASE_TAG}" \
             --tag "${image}:${RELEASE_TAG}" \
+            --tag "${image}:${commit_sha}" \
             .
       - name: Smoke-test release image
         shell: bash
@@ -148,6 +152,19 @@ jobs:
           docker logs "${container}"
           echo "Container did not become ready within 60 seconds." >&2
           exit 1
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push release image tags
+        shell: bash
+        run: |
+          set -euo pipefail
+          image="${{ steps.image.outputs.name }}"
+          docker push "${image}:${RELEASE_TAG}"
+          docker push "${image}:${{ steps.image.outputs.commit }}"
       - name: Publish SDK to npm
         shell: bash
         run: |

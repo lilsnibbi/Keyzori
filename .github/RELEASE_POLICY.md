@@ -20,12 +20,12 @@ A stable release requires:
 1. a reviewed changelog and version;
 2. `bun install --frozen-lockfile`, `bun run check`, `bun run build`, `bun run smoke:packages`, and `bun run db:check`;
 3. the live PostgreSQL/Redis flow and Docker build in CI;
-4. a published npm SDK package and checksummed server/CLI release archive tied to the source tag;
+4. a published npm SDK package, checksummed server/CLI release archive, and versioned GHCR server image tied to the source tag;
 5. a tested backup, migration, health-check, and rollback plan for the target deployment.
 
 ## Publishing
 
-The repository publishes `keyzori` to npm and attaches the matching checksummed Linux server/CLI archive to a GitHub Release from `.github/workflows/release.yml`. A granular npm token with publish access must be stored as the repository secret `NPM_TOKEN`.
+The repository publishes `keyzori` to npm, attaches the matching checksummed Linux server/CLI archive to a GitHub Release, and pushes the server container to `ghcr.io/lilsnibbi/keyzori`. Each successful `main` commit receives its full commit-SHA image tag; releases also receive their `vMAJOR.MINOR.PATCH` tag. A granular npm token with publish access must be stored as the repository secret `NPM_TOKEN`.
 
 After the version and changelog are aligned, push the matching tag (for example, `v1.0.0`). The release workflow verifies, builds, integration-tests, and smoke-tests both artifacts before publishing. To repair an existing tag, run the workflow manually and enter that tag. Re-running the same tag is safe when npm already received that version.
 

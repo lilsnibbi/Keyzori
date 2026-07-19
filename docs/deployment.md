@@ -67,7 +67,7 @@ For local services running on Docker Desktop’s host, use `host.docker.internal
 - Set `TRUST_PROXY_HEADERS=true` only when direct access is blocked, and set `TRUSTED_PROXY_CIDRS` to the immediate proxy networks.
 - Restrict `/admin/*` at the network layer when possible.
 - Store newly created license secrets immediately; the server hashes them at rest and cannot display them again.
-- Pin the built image using an immutable registry tag or digest.
+- Pull the published server image as `ghcr.io/lilsnibbi/keyzori:<commit-sha>` for an immutable build, or use its release tag (for example, `v1.0.0`). Pin production deployments to a commit-SHA tag or digest.
 - Send `SIGTERM` during deployments and allow in-flight requests to finish before enforcing a kill timeout.
 - Monitor `/ready`, HTTP error rates, rate-limit responses, PostgreSQL, Redis, and process restarts.
 
