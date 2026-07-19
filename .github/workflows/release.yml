@@ -80,7 +80,7 @@ jobs:
       - name: Smoke-test package artifacts
         run: bun run smoke:packages
       - name: Dry-run SDK package
-        run: bun publish --cwd apps/sdk --dry-run
+        run: bun pm pack --cwd apps/sdk --dry-run
       - name: Verify live PostgreSQL and Redis flow
         run: bun run --cwd apps/server ../../tests/liveFlow.ts
         env:
