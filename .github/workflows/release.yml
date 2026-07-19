@@ -29,7 +29,7 @@ env:
 jobs:
   release:
     name: Verify and publish release
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 35
     services:
       postgres:
