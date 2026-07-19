@@ -97,7 +97,7 @@ Give the returned `sk_...` secret and your deployed server URL to the applicatio
 ### 3. Integrate the SDK
 
 ```typescript
-import { LicenseClient } from "@keyzori/sdk";
+import { LicenseClient } from "keyzori";
 
 const license = new LicenseClient({
  apiKey: process.env.KEYZORI_LICENSE_KEY ?? "",

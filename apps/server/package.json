@@ -1,6 +1,6 @@
 {
-	"name": "@keyzori/server",
-	"version": "0.2.1-test.1",
+	"name": "keyzori-server",
+	"version": "0.2.1-test.2",
 	"license": "Apache-2.0",
 	"private": true,
 	"scripts": {

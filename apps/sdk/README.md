@@ -1,6 +1,6 @@
 <div align="center">
 
-# `@keyzori/sdk`
+# `keyzori`
 
 **Typed license validation for Bun and Node.js applications.**
 
@@ -18,7 +18,7 @@ The Keyzori SDK manages initial validation, hardware identification, session hea
 ## Install
 
 ```powershell
-bun add @keyzori/sdk
+bun add keyzori
 ```
 
 Local workspace development is linked automatically by `bun install`.
@@ -26,7 +26,7 @@ Local workspace development is linked automatically by `bun install`.
 ## Quick start
 
 ```typescript
-import { LicenseClient } from "@keyzori/sdk";
+import { LicenseClient } from "keyzori";
 
 const client = new LicenseClient({
 	apiKey: process.env.KEYZORI_LICENSE_KEY ?? "",

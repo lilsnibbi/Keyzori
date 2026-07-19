@@ -5,7 +5,7 @@ Keyzori follows Semantic Versioning. Stable releases use matching `vMAJOR.MINOR.
 ## Compatibility
 
 - HTTP routes below `/v1` remain backward compatible throughout a major release. Breaking payload or behavior changes require `/v2` or a new major release.
-- `@keyzori/sdk` public exports follow Semantic Versioning. New optional fields and events are minor changes; removals and required configuration changes are major changes.
+- The `keyzori` npm package's public exports follow Semantic Versioning. New optional fields and events are minor changes; removals and required configuration changes are major changes.
 - `keyzori-server` and `keyzori-admin` are built and released together. Operators should use the CLI from the same container image as the server.
 - Database migrations are forward-only and are tested from the previous stable schema. A downgrade that crosses a migration requires restoring the pre-deployment backup.
 
@@ -25,7 +25,7 @@ A stable release requires:
 
 ## Publishing
 
-The repository publishes `@keyzori/sdk` to npm and attaches the matching checksummed Linux server/CLI archive to a GitHub Release from `.github/workflows/release.yml`. Before the first release, an npm account or organization must own the `@keyzori` scope and a granular token with publish access to `@keyzori/sdk` must be stored as the repository secret `NPM_TOKEN`.
+The repository publishes `keyzori` to npm and attaches the matching checksummed Linux server/CLI archive to a GitHub Release from `.github/workflows/release.yml`. A granular npm token with publish access must be stored as the repository secret `NPM_TOKEN`.
 
 After the version and changelog are aligned, push the matching tag (for example, `v1.0.0`). The release workflow verifies, builds, integration-tests, and smoke-tests both artifacts before publishing. To repair an existing tag, run the workflow manually and enter that tag. Re-running the same tag is safe when npm already received that version.
 

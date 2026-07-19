@@ -119,14 +119,14 @@ jobs:
             --file apps/server/Dockerfile \
             --label "org.opencontainers.image.source=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}" \
             --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
-            --label "org.opencontainers.image.version=${GITHUB_REF_NAME}" \
-            --tag "${image}:${GITHUB_REF_NAME}" \
+            --label "org.opencontainers.image.version=${RELEASE_TAG}" \
+            --tag "${image}:${RELEASE_TAG}" \
             .
       - name: Smoke-test release image
         shell: bash
         run: |
           set -euo pipefail
-          image="${{ steps.image.outputs.name }}:${GITHUB_REF_NAME}"
+          image="${{ steps.image.outputs.name }}:${RELEASE_TAG}"
           docker run --rm --entrypoint /app/keyzori-admin "${image}" --help >/dev/null
           container=$(docker run --detach --network host \
             --env DATABASE_URL \

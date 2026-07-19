@@ -1,6 +1,6 @@
 <div align="center">
 
-# `@keyzori/server`
+# Keyzori server
 
 **The deployable Keyzori licensing runtime.**
 

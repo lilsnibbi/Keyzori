@@ -60,7 +60,7 @@ export const openApiDescription = [
 	"",
 	"## TypeScript SDK configuration",
 	"",
-	"These options are passed to `new LicenseClient(...)` in the official `@keyzori/sdk` package.",
+	"These options are passed to `new LicenseClient(...)` in the official `keyzori` package.",
 	"",
 	"| Option | Required/default | Meaning |",
 	"| --- | --- | --- |",

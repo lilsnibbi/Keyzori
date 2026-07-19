@@ -1,6 +1,6 @@
 # SDK reference
 
-`@keyzori/sdk` integrates Bun or Node.js desktop/server applications with a Keyzori server. It is not a browser SDK because hardware identification uses operating-system APIs.
+`keyzori` integrates Bun or Node.js desktop/server applications with a Keyzori server. It is not a browser SDK because hardware identification uses operating-system APIs.
 
 ## Requirements and installation
 
@@ -9,7 +9,7 @@
 - A full `sk_...` secret returned when an administrator creates a license.
 
 ```powershell
-bun add @keyzori/sdk
+bun add keyzori
 ```
 
 The package is ESM and exports compiled JavaScript plus TypeScript declarations.
@@ -17,7 +17,7 @@ The package is ESM and exports compiled JavaScript plus TypeScript declarations.
 ## Recommended integration
 
 ```typescript
-import { LicenseClient } from "@keyzori/sdk";
+import { LicenseClient } from "keyzori";
 
 const client = new LicenseClient({
 	apiKey: process.env.KEYZORI_LICENSE_KEY ?? "",
