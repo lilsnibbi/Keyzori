@@ -2,6 +2,11 @@ import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
 
 const projectRoot = resolve(import.meta.dir, "..");
+const { version } = (await Bun.file(
+	resolve(projectRoot, "package.json"),
+).json()) as {
+	version: string;
+};
 
 async function verifyRelease(
 	environment: Record<string, string>,
@@ -39,7 +44,9 @@ describe("release metadata verification", () => {
 		});
 
 		expect(result.exitCode).toBe(0);
-		expect(result.output).toContain("Release metadata is aligned at v1.0.0.");
+		expect(result.output).toContain(
+			`Release metadata is aligned at v${version}.`,
+		);
 	});
 
 	test("rejects an actual tag that does not match the package version", async () => {
@@ -50,14 +57,14 @@ describe("release metadata verification", () => {
 
 		expect(result.exitCode).toBe(1);
 		expect(result.output).toContain(
-			"Release tag v9.9.9 does not match v1.0.0.",
+			`Release tag v9.9.9 does not match v${version}.`,
 		);
 	});
 
 	test("accepts the explicit matching tag used by the release workflow", async () => {
 		const result = await verifyRelease(
 			{ GITHUB_REF_NAME: "main", GITHUB_REF_TYPE: "branch" },
-			"v1.0.0",
+			`v${version}`,
 		);
 
 		expect(result.exitCode).toBe(0);

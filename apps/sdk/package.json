@@ -1,6 +1,6 @@
 {
 	"name": "@keyzori/sdk",
-	"version": "1.0.0",
+	"version": "0.2.0",
 	"license": "Apache-2.0",
 	"description": "Typed SDK for integrating applications with a Keyzori License Server.",
 	"author": "Keyzori contributors",
