@@ -35,13 +35,6 @@ if (packages.some((manifest) => manifest.license !== "Apache-2.0")) {
 	throw new Error("Every workspace package must declare Apache-2.0.");
 }
 
-const changelog = await Bun.file("CHANGELOG.md").text();
-if (!changelog.includes(`## [${version}]`)) {
-	throw new Error(
-		`CHANGELOG.md must include a ## [${version}] release section.`,
-	);
-}
-
 const requestedTag = process.argv[2] ?? Bun.env.GITHUB_REF_NAME;
 if (requestedTag && requestedTag !== `v${version}`) {
 	throw new Error(`Release tag ${requestedTag} does not match v${version}.`);

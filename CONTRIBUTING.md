@@ -29,7 +29,6 @@ See the [development guide](.github/DEVELOPMENT.md) for repository commands, sch
 
 - Keep each pull request focused and explain user-visible behavior.
 - Add or update tests for changed behavior.
-- Update documentation and `CHANGELOG.md` when users or operators are affected.
 - Ensure `bun run check` and `bun run build` pass.
 - Keep application-service and SDK source lines at 100% coverage with `bun run test:coverage:core`.
 - Call out migrations, compatibility changes, and operational risks explicitly.

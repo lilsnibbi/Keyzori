@@ -215,6 +215,6 @@ Keyzori provides a self-hosted server, bundled administrator CLI, TypeScript SDK
 
 ## Community, security, and license
 
-[Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) · [Support](SUPPORT.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md) · [Changelog](CHANGELOG.md)
+[Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) · [Support](SUPPORT.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md)
 
 Licensed under the [Apache License 2.0](LICENSE).
