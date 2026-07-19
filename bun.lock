@@ -13,11 +13,11 @@
     },
     "apps/sdk": {
       "name": "@keyzori/sdk",
-      "version": "0.2.0",
+      "version": "0.2.1-test.1",
     },
     "apps/server": {
       "name": "@keyzori/server",
-      "version": "0.2.0",
+      "version": "0.2.1-test.1",
       "dependencies": {
         "@elysia/openapi": "^1.4.15",
         "commander": "^15.0.0",

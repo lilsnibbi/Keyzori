@@ -21,7 +21,7 @@ export function createProgram(
 	program
 		.name("keyzori-admin")
 		.description("Administer the local Keyzori server database")
-		.version("0.2.0");
+		.version("0.2.1-test.1");
 
 	let cachedService: AdminOperations | undefined;
 	const getService = (): AdminOperations => {

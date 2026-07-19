@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing vMAJOR.MINOR.PATCH tag to publish or repair
+        description: Existing SemVer release tag to publish or repair (for example v1.0.0 or v1.0.0-test.1)
         required: true
         type: string
 
@@ -153,7 +153,15 @@ jobs:
         run: |
           set -euo pipefail
           echo "Authenticated npm user: $(bun pm whoami)"
-          bun run publish:packages
+          version="${RELEASE_TAG#v}"
+          if [[ "${version}" == *-* ]]; then
+            npm_tag="${version#*-}"
+            npm_tag="${npm_tag%%.*}"
+          else
+            npm_tag="latest"
+          fi
+          echo "Publishing ${version} with npm dist-tag ${npm_tag}"
+          (cd apps/sdk && bun publish --access public --tolerate-republish --tag "${npm_tag}")
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_REGISTRY: https://registry.npmjs.org/

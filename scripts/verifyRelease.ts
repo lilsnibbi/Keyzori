@@ -23,8 +23,13 @@ const packages = await Promise.all(manifests.map(readManifest));
 const versions = packages.map((manifest) => manifest.version);
 const version = versions[0];
 
-if (!version || !/^\d+\.\d+\.\d+$/.test(version)) {
-	throw new Error("The release version must use MAJOR.MINOR.PATCH format.");
+if (
+	!version ||
+	!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.test(
+		version,
+	)
+) {
+	throw new Error("The release version must be valid SemVer.");
 }
 if (versions.some((candidate) => candidate !== version)) {
 	throw new Error(
