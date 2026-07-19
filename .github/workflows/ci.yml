@@ -21,7 +21,7 @@ env:
 jobs:
   verify:
     name: Verify workspace and artifacts
-    runs-on: snibbi
+    runs-on: self-hosted
     timeout-minutes: 25
     services:
       postgres:
