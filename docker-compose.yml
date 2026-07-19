@@ -1,0 +1,57 @@
+name: "Keyzori"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://keyzori:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD to a URL-safe random value}@postgres:5432/keyzori
+      REDIS_URL: redis://redis:6379
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?Set ADMIN_API_KEY to a random value of at least 32 characters}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  postgres:
+    image: postgres:18@sha256:32ca0af8e77bfb8c6610c488e4691f83f972a3e9e64d3b02facf3ab111ad5500
+    environment:
+      POSTGRES_DB: keyzori
+      POSTGRES_USER: keyzori
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD to a URL-safe random value}
+    expose:
+      - "5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keyzori -d keyzori"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:8@sha256:234c902a2db49461a129e2d4aeff85b28cf20187ed274a67f6e50995fa713c7b
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

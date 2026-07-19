@@ -1,0 +1,47 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:best-practices"],
+	"timezone": "Australia/Sydney",
+	"schedule": ["* * * * 0,6"],
+	"reviewers": ["lilsnibbi"],
+	"labels": ["dependencies", "renovate"],
+	"dependencyDashboardLabels": ["dependencies", "renovate"],
+	"prConcurrentLimit": 5,
+	"prHourlyLimit": 2,
+	"automerge": false,
+	"vulnerabilityAlerts": {
+		"assignees": ["lilsnibbi"],
+		"labels": ["dependencies", "renovate", "security"]
+	},
+	"packageRules": [
+		{
+			"description": "Group non-major Bun dependency updates",
+			"matchManagers": ["bun"],
+			"matchUpdateTypes": ["minor", "patch"],
+			"groupName": "Bun dependencies",
+			"addLabels": ["bun"]
+		},
+		{
+			"description": "Group GitHub Actions updates",
+			"matchManagers": ["github-actions"],
+			"groupName": "GitHub Actions",
+			"addLabels": ["github-actions"]
+		},
+		{
+			"description": "Group Docker image updates",
+			"matchDatasources": ["docker"],
+			"groupName": "Docker images",
+			"addLabels": ["docker"]
+		},
+		{
+			"description": "Highlight major updates",
+			"matchUpdateTypes": ["major"],
+			"addLabels": ["major-update"]
+		},
+		{
+			"description": "Identify digest and pin updates",
+			"matchUpdateTypes": ["digest", "pin", "pinDigest"],
+			"addLabels": ["digest"]
+		}
+	]
+}

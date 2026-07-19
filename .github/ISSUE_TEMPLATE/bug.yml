@@ -1,0 +1,36 @@
+name: Bug report
+description: Report a reproducible Keyzori defect
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include secrets, customer data, database URLs, HWIDs, or vulnerability details. Use the private security process for vulnerabilities.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: v1.0.0 or commit
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options: [Server, Admin CLI, SDK, Migrations, Docker, Documentation]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include expected behavior, actual behavior, and a minimal sanitized reproduction.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Bun version, operating system, database/Redis versions, and deployment method.
+    validations:
+      required: true

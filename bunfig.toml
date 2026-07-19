@@ -1,0 +1,6 @@
+[install]
+exact = false
+ignoreScripts = false
+saveTextLockfile = true
+linkWorkspacePackages = true
+linker = "hoisted"
