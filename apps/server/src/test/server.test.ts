@@ -24,6 +24,7 @@ const mockRedis = {
 };
 
 import { createServer } from "../index";
+import { DomainError } from "../domain/errors";
 
 const app = createServer(mockRedis as unknown as import("bun").RedisClient);
 
@@ -46,6 +47,15 @@ describe("Keyzori Server Comprehensive Operations", () => {
 		expect(response.status).toBe(200);
 		expect(await response.json()).toEqual({ status: "ready" });
 		rateLimitCount = 0;
+	});
+
+	it("reports dependency unavailability", async () => {
+		mockRedis.ping.mockRejectedValueOnce(new Error("Redis unavailable"));
+		const response = await app.handle(
+			new Request("http://localhost:3000/ready"),
+		);
+		expect(response.status).toBe(503);
+		expect(await response.json()).toEqual({ status: "unavailable" });
 	});
 
 	it("publishes themed Scalar UI and a complete OpenAPI specification", async () => {
@@ -197,6 +207,19 @@ describe("Keyzori Server Comprehensive Operations", () => {
 
 		expect(response.status).toBe(500);
 		expect(await response.json()).toEqual({ error: "Internal Server Error" });
+	});
+
+	it("maps uncaught domain errors at the server boundary", async () => {
+		const domainErrorApp = createServer(
+			mockRedis as unknown as import("bun").RedisClient,
+		).get("/__test_domain_error", () => {
+			throw new DomainError("Safe domain failure", 409);
+		});
+		const response = await domainErrorApp.handle(
+			new Request("http://localhost:3000/__test_domain_error"),
+		);
+		expect(response.status).toBe(409);
+		expect(await response.json()).toEqual({ error: "Safe domain failure" });
 	});
 
 	it("Blocks unauthorized admin access", async () => {
