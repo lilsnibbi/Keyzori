@@ -4,17 +4,23 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing vMAJOR.MINOR.PATCH tag to publish or repair
+        required: true
+        type: string
 
 permissions:
-  contents: read
-  packages: write
+  contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
   cancel-in-progress: false
 
 env:
   CI: "true"
+  RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
   DATABASE_URL: postgresql://keyzori:keyzori-release-password@127.0.0.1:5432/keyzori
   REDIS_URL: redis://127.0.0.1:6379
   ADMIN_API_KEY: release-only-admin-key-that-is-at-least-32-characters
@@ -51,6 +57,7 @@ jobs:
       - name: Check out release tag
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
+          ref: ${{ env.RELEASE_TAG }}
           fetch-depth: 0
           persist-credentials: false
       - name: Set up Bun
@@ -65,8 +72,11 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${NPM_TOKEN}" || { echo "NPM_TOKEN is not configured." >&2; exit 1; }
-          git merge-base --is-ancestor "${GITHUB_SHA}" "origin/${DEFAULT_BRANCH}" || { echo "Release tag must point to the default branch." >&2; exit 1; }
-          bun run release:verify -- "${GITHUB_REF_NAME}"
+          git check-ref-format "refs/tags/${RELEASE_TAG}" >/dev/null
+          tag_commit=$(git rev-list --max-count=1 "refs/tags/${RELEASE_TAG}")
+          test -n "${tag_commit}" || { echo "Release tag ${RELEASE_TAG} was not found." >&2; exit 1; }
+          git merge-base --is-ancestor "${tag_commit}" "origin/${DEFAULT_BRANCH}" || { echo "Release tag must point to the default branch." >&2; exit 1; }
+          bun run release:verify -- "${RELEASE_TAG}"
       - name: Install locked dependencies
         run: bun install --frozen-lockfile
       - name: Audit high-severity dependencies
@@ -79,8 +89,17 @@ jobs:
         run: bun run build
       - name: Smoke-test package artifacts
         run: bun run smoke:packages
-      - name: Dry-run SDK package
-        run: bun pm pack --cwd apps/sdk --dry-run
+      - name: Package release assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          tar --create --gzip \
+            --file "release-assets/keyzori-${RELEASE_TAG}-linux-x64.tar.gz" \
+            --directory apps/server/dist \
+            .
+          (cd apps/sdk && bun pm pack --destination ../../release-assets)
+          (cd release-assets && sha256sum ./* > SHA256SUMS)
       - name: Verify live PostgreSQL and Redis flow
         run: bun run --cwd apps/server ../../tests/liveFlow.ts
         env:
@@ -130,23 +149,25 @@ jobs:
           echo "Container did not become ready within 60 seconds." >&2
           exit 1
       - name: Publish SDK to npm
-        run: bun run publish:packages
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Push verified release image
-        id: push
         shell: bash
         run: |
           set -euo pipefail
-          image="${{ steps.image.outputs.name }}:${GITHUB_REF_NAME}"
-          docker push "${image}"
-          digest=$(docker buildx imagetools inspect "${image}" --format '{{json .Manifest.Digest}}')
-          digest=${digest//\"/}
-          test -n "${digest}" || { echo "Published image digest was not found." >&2; exit 1; }
-          echo "Published ${image}@${digest}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Authenticated npm user: $(bun pm whoami)"
+          bun run publish:packages
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
+      - name: Create GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+            gh release upload "${RELEASE_TAG}" release-assets/* --clobber
+          else
+            gh release create "${RELEASE_TAG}" release-assets/* \
+              --generate-notes \
+              --title "${RELEASE_TAG}" \
+              --verify-tag
+          fi
