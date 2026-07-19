@@ -35,7 +35,9 @@ if (packages.some((manifest) => manifest.license !== "Apache-2.0")) {
 	throw new Error("Every workspace package must declare Apache-2.0.");
 }
 
-const requestedTag = process.argv[2] ?? Bun.env.GITHUB_REF_NAME;
+const requestedTag =
+	process.argv[2] ??
+	(Bun.env.GITHUB_REF_TYPE === "tag" ? Bun.env.GITHUB_REF_NAME : undefined);
 if (requestedTag && requestedTag !== `v${version}`) {
 	throw new Error(`Release tag ${requestedTag} does not match v${version}.`);
 }
