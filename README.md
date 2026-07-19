@@ -17,6 +17,9 @@ Create, validate, meter, hardware-lock, and revoke licenses through one focused 
 > [!NOTE]
 > Keyzori is self-hosted. You control the server, PostgreSQL database, Redis instance, license data, and deployment environment.
 
+> [!WARNING]
+> Keyzori is still under active development. Expect bugs, instability, missing features, and breaking changes.
+
 ## What is Keyzori?
 
 Keyzori is a self-hosted licensing system with one deployable server runtime and one publishable client SDK. The server runtime exposes both HTTP and in-container CLI delivery interfaces.
