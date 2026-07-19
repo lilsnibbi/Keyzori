@@ -6,6 +6,7 @@
 	"reviewers": ["lilsnibbi"],
 	"labels": ["dependencies", "renovate"],
 	"dependencyDashboardLabels": ["dependencies", "renovate"],
+	"prBodyTemplate": "{{{header}}}{{{table}}}{{{warnings}}}{{{notes}}}{{{changelogs}}}{{{controls}}}",
 	"prConcurrentLimit": 5,
 	"prHourlyLimit": 2,
 	"automerge": false,
@@ -14,6 +15,11 @@
 		"labels": ["dependencies", "renovate", "security"]
 	},
 	"packageRules": [
+		{
+			"description": "Allow npm updates immediately after release",
+			"matchDatasources": ["npm"],
+			"minimumReleaseAge": null
+		},
 		{
 			"description": "Group non-major Bun dependency updates",
 			"matchManagers": ["bun"],
