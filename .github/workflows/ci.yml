@@ -21,7 +21,7 @@ env:
 jobs:
   verify:
     name: Verify workspace and artifacts
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     services:
       postgres:
