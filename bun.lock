@@ -5,10 +5,10 @@
     "": {
       "name": "keyzori-workspace",
       "devDependencies": {
-        "@biomejs/biome": "^2.5.4",
-        "@types/bun": "^1.3.14",
-        "@types/node": "^26.1.1",
-        "typescript": "^7.0.2",
+        "@biomejs/biome": "2.5.4",
+        "@types/bun": "1.3.14",
+        "@types/node": "26.1.1",
+        "typescript": "7.0.2",
       },
     },
     "apps/sdk": {
