@@ -2,13 +2,11 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:best-practices"],
 	"timezone": "Australia/Sydney",
-	"schedule": ["* * * * 0,6"],
 	"reviewers": ["lilsnibbi"],
 	"labels": ["dependencies", "renovate"],
 	"dependencyDashboardLabels": ["dependencies", "renovate"],
 	"prBodyTemplate": "{{{header}}}{{{table}}}{{{warnings}}}{{{notes}}}{{{changelogs}}}{{{controls}}}",
-	"prConcurrentLimit": 5,
-	"prHourlyLimit": 2,
+	"prCreation": "immediate",
 	"automerge": false,
 	"vulnerabilityAlerts": {
 		"assignees": ["lilsnibbi"],
@@ -16,8 +14,8 @@
 	},
 	"packageRules": [
 		{
-			"description": "Allow npm updates immediately after release",
-			"matchDatasources": ["npm"],
+			"description": "Allow all dependency updates immediately after release",
+			"matchPackageNames": ["*"],
 			"minimumReleaseAge": null
 		},
 		{
