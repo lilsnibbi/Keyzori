@@ -10,7 +10,7 @@ RUN bun install --frozen-lockfile --ignore-scripts
 COPY apps/server ./apps/server
 RUN bun run build:server
 
-FROM gcr.io/distroless/cc-debian12:nonroot@sha256:66aa873a4a14fb164aa01296058efd8253744606d72715e45acface073359faa AS runtime
+FROM gcr.io/distroless/cc-debian12:nonroot@sha256:fccdbb0a547c14e23fcf4ce8ad62ca5d43b4faae8d22cd292f490fef9946c96e AS runtime
 LABEL org.opencontainers.image.title="Keyzori License Server" \
 	org.opencontainers.image.description="Self-hosted software license management server" \
 	org.opencontainers.image.licenses="Apache-2.0"
