@@ -24,6 +24,8 @@ Create, validate, meter, hardware-lock, and revoke licenses through one focused 
 
 Keyzori is a self-hosted licensing system with one deployable server runtime and one publishable client SDK. The server runtime exposes both HTTP and in-container CLI delivery interfaces.
 
+The optional [standalone admin dashboard](apps/dash/README.md) provides a compact dark-mode CRUD interface without direct database access. It talks to the server only through authenticated admin API routes and can be deployed separately.
+
 <table>
 <tr>
 <td width="33%" valign="top">
@@ -107,6 +109,8 @@ const license = new LicenseClient({
 const customFields = await license.initialize();
 ```
 
+The returned object contains client-visible custom fields configured on that license. Customer custom fields are administrative metadata and are not sent to the SDK.
+
 Continue with the [complete product flow](docs/product-flow.md) for heartbeats, logout, and revocation.
 
 ## Documentation
@@ -188,6 +192,8 @@ The connection URLs in `apps/server/.env` must be reachable from inside the cont
 | Command | Purpose |
 | --- | --- |
 | `bun run dev:server` | Start the source server in watch mode |
+| `bun run dev:dash` | Start the admin dashboard in watch mode |
+| `bun run dash` | Start the admin dashboard |
 | `bun run dev:server:binary` | Rebuild and start the compiled server |
 | `bun run build:server` | Compile the server and admin CLI executables |
 | `bun run server` | Run the existing compiled server |
@@ -209,6 +215,7 @@ The connection URLs in `apps/server/.env` must be reachable from inside the cont
 | `bun run test:server` | Test the server workspace |
 | `bun run test:cli` | Test the server's CLI delivery adapter |
 | `bun run test:sdk` | Test the SDK workspace |
+| `bun run test:dash` | Test the dashboard security boundary |
 
 </details>
 
@@ -218,6 +225,6 @@ Keyzori provides a self-hosted server, bundled administrator CLI, TypeScript SDK
 
 ## Community, security, and license
 
-[Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) · [Support](SUPPORT.md) · [Security](SECURITY.md) · [Code of conduct](CODE_OF_CONDUCT.md)
+[Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) · [Support](https://tsukiyo.cc/join)
 
 Licensed under the [Apache License 2.0](LICENSE).

@@ -11,6 +11,15 @@ export type LogLevel = "none" | "error" | "warn" | "info" | "debug";
 /** License type returned by the server after validation. */
 export type KeyType = "PERPETUAL" | "SUBSCRIPTION" | "USAGE";
 
+/** A scalar value accepted in license custom fields. */
+export type JsonPrimitive = string | number | boolean | null;
+
+/** Any JSON-compatible value accepted in license custom fields. */
+export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
+
+/** Client-visible JSON metadata configured on a license. */
+export type JsonObject = { [key: string]: JsonValue };
+
 /**
  * Configuration options for initializing the Keyzori LicenseClient.
  */
@@ -57,9 +66,9 @@ export interface LicenseClientConfig {
 export interface LicenseEventMap {
 	/**
 	 * Emitted exactly once when the initial handshake completes successfully.
-	 * @param customFields - The arbitrary JSON data attached to the user's API Key.
+	 * @param customFields - Client-visible JSON metadata attached to the license.
 	 */
-	ready: (customFields: Record<string, unknown>) => void;
+	ready: (customFields: JsonObject) => void;
 
 	/**
 	 * Emitted every time a recurring heartbeat completes successfully.

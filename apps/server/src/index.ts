@@ -94,7 +94,7 @@ export const createServer = (redis: RedisClient, config?: ServerConfig) => {
 						{
 							name: "Admin",
 							description:
-								"Create owners and keys, inspect licenses, and revoke access. Requires X-Admin-Key.",
+								"Create, inspect, update, and delete owners and licenses. Requires X-Admin-Key.",
 						},
 						{
 							name: "License",

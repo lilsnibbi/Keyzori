@@ -5,13 +5,14 @@ import type {
 	KeyType,
 	LicenseClientConfig,
 	LicenseEvents,
+	JsonObject,
 	LogLevel,
 } from "./types";
 
 interface HandshakePayload {
 	success: true;
 	type: KeyType;
-	customFields: Record<string, unknown>;
+	customFields: JsonObject;
 	sessionToken: string;
 }
 
@@ -38,9 +39,9 @@ export class LicenseClient {
 	private readonly maxRetries: number;
 	private readonly logLevel: LogLevel;
 	private heartbeatTimer?: ReturnType<typeof setTimeout>;
-	private initialization?: Promise<Record<string, unknown>>;
+	private initialization?: Promise<JsonObject>;
 	private destruction?: Promise<void>;
-	private customFields?: Record<string, unknown>;
+	private customFields?: JsonObject;
 	private state: ClientState = "idle";
 	private failureStrikes = 0;
 
@@ -61,7 +62,7 @@ export class LicenseClient {
 	}
 
 	/** Validates the license once and starts heartbeats after success. */
-	public initialize(): Promise<Record<string, unknown>> {
+	public initialize(): Promise<JsonObject> {
 		if (this.state === "destroyed") {
 			return Promise.reject(new Error("LicenseClient has been destroyed"));
 		}
@@ -75,7 +76,7 @@ export class LicenseClient {
 		return this.initialization;
 	}
 
-	private async initializeOnce(): Promise<Record<string, unknown>> {
+	private async initializeOnce(): Promise<JsonObject> {
 		try {
 			const response = await this.network.sendHandshake(
 				this.hardware.getHwid(),
@@ -125,7 +126,7 @@ export class LicenseClient {
 		return {
 			success: true,
 			type: payload.type,
-			customFields: payload.customFields as Record<string, unknown>,
+			customFields: payload.customFields as JsonObject,
 			sessionToken: payload.sessionToken,
 		};
 	}

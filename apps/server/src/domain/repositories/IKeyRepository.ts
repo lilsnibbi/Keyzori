@@ -11,7 +11,20 @@ export type ApiKeyWithWhitelists = ApiKey & {
 };
 
 export type ApiKeyUpdate = Partial<
-	Pick<ApiKey, "firstActivatedAt" | "revoked">
+	Pick<
+		ApiKey,
+		| "userId"
+		| "type"
+		| "limitIp"
+		| "limitHwid"
+		| "limitConcurrent"
+		| "limitUsage"
+		| "trialDurationMin"
+		| "firstActivatedAt"
+		| "customFields"
+		| "expiresAt"
+		| "revoked"
+	>
 >;
 
 export interface IKeyRepository {

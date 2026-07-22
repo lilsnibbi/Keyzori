@@ -11,6 +11,7 @@ import type {
 	RegisteredDevice,
 	User,
 } from "../apps/server/src/domain/entities";
+import type { JsonObject } from "../apps/server/src/domain/entities";
 import type {
 	ApiKeyUpdate,
 	ApiKeyWithWhitelists,
@@ -21,16 +22,24 @@ import type {
 	ISessionRepository,
 	SessionBinding,
 } from "../apps/server/src/domain/repositories/ISessionRepository";
-import type { IUserRepository } from "../apps/server/src/domain/repositories/IUserRepository";
+import type {
+	IUserRepository,
+	UserUpdate,
+} from "../apps/server/src/domain/repositories/IUserRepository";
 
 class MemoryUserRepository implements IUserRepository {
 	readonly users: User[] = [];
 
-	async create(email: string, name: string): Promise<User> {
+	async create(
+		email: string,
+		name: string,
+		customFields: JsonObject,
+	): Promise<User> {
 		const user = {
 			id: crypto.randomUUID(),
 			email,
 			name,
+			customFields,
 			createdAt: new Date(),
 		};
 		this.users.push(user);
@@ -43,6 +52,18 @@ class MemoryUserRepository implements IUserRepository {
 
 	async findAll(): Promise<User[]> {
 		return [...this.users];
+	}
+
+	async update(id: string, data: UserUpdate): Promise<User> {
+		const user = this.users.find((candidate) => candidate.id === id);
+		if (!user) throw new Error("Missing user");
+		Object.assign(user, data);
+		return user;
+	}
+
+	async delete(id: string): Promise<void> {
+		const index = this.users.findIndex((user) => user.id === id);
+		if (index >= 0) this.users.splice(index, 1);
 	}
 }
 

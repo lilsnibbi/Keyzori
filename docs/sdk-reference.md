@@ -29,7 +29,7 @@ const client = new LicenseClient({
 });
 
 client.events.on("ready", (customFields) => {
-	console.info("License ready", customFields);
+	console.info("License tier", customFields.tier);
 });
 
 client.events.on("license:expired", (reason) => {
@@ -62,7 +62,7 @@ Attach event listeners before `initialize()` so the initial `ready` event cannot
 The package exports:
 
 - `LicenseClient` — the public runtime API.
-- `LicenseClientConfig`, `LicenseEvents`, `LicenseEventMap`, `KeyType`, and `LogLevel` TypeScript types.
+- `LicenseClientConfig`, `LicenseEvents`, `LicenseEventMap`, `KeyType`, `LogLevel`, `JsonObject`, `JsonValue`, and `JsonPrimitive` TypeScript types.
 
 Hardware identification, networking, response-size limits, and event dispatch are internal implementation details and are not public package exports.
 
@@ -100,7 +100,7 @@ Register lifecycle listeners through this broker.
 ### `initialize()`
 
 ```typescript
-initialize(): Promise<Record<string, unknown>>
+initialize(): Promise<JsonObject>
 ```
 
 Performs the first handshake. On success it:
@@ -112,6 +112,14 @@ Performs the first handshake. On success it:
 5. schedules the heartbeat loop.
 
 Concurrent calls share one initialization promise. Calls made while already active return the original custom fields without creating another loop.
+
+`customFields` is the client-visible JSON object configured on the license itself. Customer-level custom fields are operator metadata and are never included in handshake or SDK responses. Values may be strings, numbers, booleans, `null`, arrays, or nested objects.
+
+```typescript
+import type { JsonObject } from "keyzori";
+
+const fields: JsonObject = await client.initialize();
+```
 
 An unsuccessful initial handshake rejects with an `Error`, logs according to `logLevel`, and destroys the client. A failed/destroyed instance cannot be reinitialized; create a new `LicenseClient` if retry policy requires a fresh session.
 
@@ -175,5 +183,5 @@ client.events.removeListener("heartbeat:success", onHeartbeat);
 - Treat the full license key as a credential. Do not log or embed it in public source.
 - Use HTTPS outside loopback development; the SDK rejects remote cleartext URLs.
 - The SDK performs policy enforcement in application code; determined users controlling the host may modify that application. Combine licensing with server-side authorization for high-value operations.
-- `customFields` are customer-visible and must not contain secrets.
+- License `customFields` are visible to every application holding the license secret and must not contain secrets. Customer custom fields remain administrative-only.
 - Ensure application shutdown awaits `destroy()` when possible, while still relying on the 45-second server TTL after crashes.

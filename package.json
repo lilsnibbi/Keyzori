@@ -38,8 +38,10 @@
 		"setup": "bun install --frozen-lockfile && bun run db:migrate",
 		"dev": "bun run dev:server",
 		"dev:server": "bun run --cwd apps/server dev",
+		"dev:dash": "bun run --cwd apps/dash dev",
 		"dev:server:binary": "bun run build:server && bun run server",
 		"start": "bun run server",
+		"dash": "bun run --cwd apps/dash start",
 		"server": "bun run --cwd apps/server start",
 		"cli": "bun run --cwd apps/server cli",
 		"cli:help": "bun run --cwd apps/server cli --help",
@@ -53,9 +55,10 @@
 		"test:server": "bun run --cwd apps/server test",
 		"test:cli": "bun test apps/server/src/test/cli.test.ts",
 		"test:sdk": "bun run --cwd apps/sdk test",
+		"test:dash": "bun run --cwd apps/dash test",
 		"test:flow": "bun test tests/productFlow.test.ts",
 		"test:live": "bun run build:server && bun run --cwd apps/server ../../tests/liveFlow.ts",
-		"typecheck": "bun run --cwd apps/server typecheck && bun run --cwd apps/sdk typecheck && bunx tsc --project tests/tsconfig.json",
+		"typecheck": "bun run --cwd apps/server typecheck && bun run --cwd apps/sdk typecheck && bun run --cwd apps/dash typecheck && bunx tsc --project tests/tsconfig.json",
 		"check": "bun run typecheck && bun run test && bun run test:coverage:core && bun run release:verify && bun run lint",
 		"check:server": "bun run --cwd apps/server typecheck && bun run test:server",
 		"check:cli": "bun run --cwd apps/server typecheck && bun run test:cli",
@@ -73,13 +76,16 @@
 		"format": "bunx @biomejs/biome format --write .",
 		"audit": "bun audit --audit-level=high"
 	},
+	"workspaces": [
+		"apps/*"
+	],
+	"dependencies": {
+		"elysia": "1.4.29"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.4",
 		"@types/bun": "1.3.14",
 		"@types/node": "26.1.1",
 		"typescript": "7.0.2"
-	},
-	"workspaces": [
-		"apps/*"
-	]
+	}
 }

@@ -59,6 +59,26 @@ Use `/health` as a liveness probe and `/ready` as a readiness probe. The readine
 
 For local services running on Docker Desktop’s host, use `host.docker.internal` rather than `localhost` in database and Redis URLs. In production, use private network service addresses.
 
+## Standalone dashboard
+
+The optional dashboard is deployed separately from the server and performs every data operation through the authenticated admin HTTP API. It does not need database or Redis access.
+
+```powershell
+Copy-Item apps/dash/.env.example apps/dash/.env
+# Configure KEYZORI_SERVER_URL, KEYZORI_AUTH_PASS, and KEYZORI_ADMIN_KEY.
+bun install --frozen-lockfile
+bun run dash
+```
+
+For a container deployment:
+
+```powershell
+docker build --file apps/dash/Dockerfile --tag keyzori-dashboard .
+docker run --env-file apps/dash/.env --publish 3100:3100 keyzori-dashboard
+```
+
+Terminate TLS in front of the dashboard, keep secure cookies enabled, and restrict network access to operators. The browser receives only an opaque session cookie; `KEYZORI_ADMIN_KEY` remains in the dashboard process. A restart clears all in-memory dashboard sessions.
+
 ## Secure deployment guidance
 
 - Terminate TLS at a trusted reverse proxy or platform load balancer.
