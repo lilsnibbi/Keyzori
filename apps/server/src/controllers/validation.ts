@@ -160,6 +160,28 @@ export const AdminCreateKeyInputSchema = t.Object(
 	},
 );
 
+export const AdminUpdateKeyInputSchema = t.Object(
+	{
+		userId: t.Optional(t.String({ minLength: 1, maxLength: 64 })),
+		type: t.Optional(KeyTypeSchema),
+		limitIp: t.Optional(t.Integer({ minimum: 0 })),
+		limitHwid: t.Optional(t.Integer({ minimum: 0 })),
+		limitConcurrent: t.Optional(t.Integer({ minimum: 0 })),
+		limitUsage: t.Optional(t.Integer({ minimum: 0 })),
+		trialDurationMin: t.Optional(t.Integer({ minimum: 0 })),
+		customFields: t.Optional(t.Record(t.String(), t.Unknown())),
+		expiresAt: t.Optional(
+			t.Union([t.String({ format: "date-time" }), t.Null()]),
+		),
+		revoked: t.Optional(t.Boolean()),
+	},
+	{
+		minProperties: 1,
+		description:
+			"Mutable license fields. Set expiresAt to null when changing away from SUBSCRIPTION.",
+	},
+);
+
 export const AdminCreateUserInputSchema = t.Object({
 	email: t.String({
 		format: "email",
@@ -173,12 +195,46 @@ export const AdminCreateUserInputSchema = t.Object({
 		description: "Display name for the license owner.",
 		examples: ["Example Owner"],
 	}),
+	customFields: t.Optional(
+		t.Record(t.String(), t.Unknown(), {
+			default: {},
+			description:
+				"Operator-defined customer metadata. This is not returned during license handshakes.",
+			examples: [{ company: "Acme", accountId: "acct_123" }],
+		}),
+	),
 });
+
+export const AdminUpdateUserInputSchema = t.Object(
+	{
+		email: t.Optional(
+			t.String({
+				format: "email",
+				maxLength: 254,
+				description: "Replacement owner email address.",
+			}),
+		),
+		name: t.Optional(
+			t.String({
+				minLength: 1,
+				maxLength: 200,
+				description: "Replacement owner display name.",
+			}),
+		),
+		customFields: t.Optional(
+			t.Record(t.String(), t.Unknown(), {
+				description: "Replacement operator-defined customer metadata.",
+			}),
+		),
+	},
+	{ minProperties: 1 },
+);
 
 export const UserResponseSchema = t.Object({
 	id: t.String({ description: "Internal owner ID." }),
 	email: t.String({ format: "email" }),
 	name: t.String(),
+	customFields: JsonObjectSchema,
 	createdAt: t.Date(),
 });
 

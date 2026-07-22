@@ -21,6 +21,7 @@ export const users = pgTable("User", {
 	id: text().primaryKey(),
 	email: text().notNull().unique(),
 	name: text().notNull(),
+	customFields: jsonb().$type<JsonObject>().notNull().default({}),
 	createdAt: timestamp({ mode: "date", precision: 3 }).notNull().defaultNow(),
 });
 

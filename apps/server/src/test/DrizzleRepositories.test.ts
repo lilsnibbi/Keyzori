@@ -85,6 +85,7 @@ const userFixture: User = {
 	id: "user-1",
 	email: "owner@example.com",
 	name: "Owner",
+	customFields: { company: "Example Co" },
 	createdAt,
 };
 
@@ -250,11 +251,16 @@ describe("DrizzleUserRepository", () => {
 		const repository = new DrizzleUserRepository(asDatabase(database));
 
 		expect(
-			await repository.create(userFixture.email, userFixture.name),
+			await repository.create(
+				userFixture.email,
+				userFixture.name,
+				userFixture.customFields,
+			),
 		).toEqual(userFixture);
 		expect(database.queries[0]?.valuesInput).toMatchObject({
 			email: userFixture.email,
 			name: userFixture.name,
+			customFields: userFixture.customFields,
 		});
 		expect(await repository.findAll()).toEqual([userFixture]);
 	});
@@ -263,7 +269,7 @@ describe("DrizzleUserRepository", () => {
 		const repository = new DrizzleUserRepository(
 			asDatabase(new FakeDatabase([], [[]])),
 		);
-		expect(repository.create("owner@example.com", "Owner")).rejects.toThrow(
+		expect(repository.create("owner@example.com", "Owner", {})).rejects.toThrow(
 			"Database returned no created user",
 		);
 	});

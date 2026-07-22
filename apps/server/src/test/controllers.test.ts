@@ -11,6 +11,7 @@ const user = {
 	id: "user-1",
 	email: "owner@example.com",
 	name: "Owner",
+	customFields: { company: "Example Co" },
 	createdAt,
 };
 const key = {
@@ -70,8 +71,14 @@ describe("admin controller", () => {
 		const service = {
 			createUser: mock(async () => user),
 			listUsers: mock(async () => [user]),
+			getUser: mock(async () => user),
+			updateUser: mock(async () => ({ ...user, name: "Updated owner" })),
+			deleteUser: mock(async () => {}),
 			createKey: mock(async () => key),
 			listKeys: mock(async () => [key]),
+			getKey: mock(async () => key),
+			updateKey: mock(async () => ({ ...key, limitHwid: 2 })),
+			deleteKey: mock(async () => {}),
 			revokeKey: mock(async () => ({ ...key, revoked: true })),
 		} as unknown as AdminService;
 		const app = new Elysia().use(adminPlugin(service, ["admin-secret"]));
@@ -79,15 +86,44 @@ describe("admin controller", () => {
 		const createUserResponse = await app.handle(
 			adminRequest("/admin/users", {
 				method: "POST",
-				body: JSON.stringify({ email: user.email, name: user.name }),
+				body: JSON.stringify({
+					email: user.email,
+					name: user.name,
+					customFields: user.customFields,
+				}),
 			}),
 		);
 		expect(createUserResponse.status).toBe(201);
 		expect(await createUserResponse.json()).toMatchObject({ id: user.id });
+		expect(service.createUser).toHaveBeenCalledWith(
+			user.email,
+			user.name,
+			user.customFields,
+		);
 
 		const listUsersResponse = await app.handle(adminRequest("/admin/users"));
 		expect(listUsersResponse.status).toBe(200);
 		expect(await listUsersResponse.json()).toHaveLength(1);
+
+		const getUserResponse = await app.handle(
+			adminRequest("/admin/users/user-1"),
+		);
+		expect(getUserResponse.status).toBe(200);
+
+		const updateUserResponse = await app.handle(
+			adminRequest("/admin/users/user-1", {
+				method: "PATCH",
+				body: JSON.stringify({
+					name: "Updated owner",
+					customFields: { accountId: "acct_123" },
+				}),
+			}),
+		);
+		expect(updateUserResponse.status).toBe(200);
+		expect(service.updateUser).toHaveBeenCalledWith("user-1", {
+			name: "Updated owner",
+			customFields: { accountId: "acct_123" },
+		});
 
 		const createKeyResponse = await app.handle(
 			adminRequest("/admin/keys", {
@@ -102,11 +138,30 @@ describe("admin controller", () => {
 		expect(listKeysResponse.status).toBe(200);
 		expect(await listKeysResponse.json()).toHaveLength(1);
 
+		const updateKeyResponse = await app.handle(
+			adminRequest("/admin/keys/key-1", {
+				method: "PUT",
+				body: JSON.stringify({ limitHwid: 2 }),
+			}),
+		);
+		expect(updateKeyResponse.status).toBe(200);
+
 		const revokeResponse = await app.handle(
 			adminRequest("/admin/keys/key-1", { method: "PATCH" }),
 		);
 		expect(revokeResponse.status).toBe(200);
 		expect(await revokeResponse.json()).toMatchObject({ revoked: true });
+
+		const deleteKeyResponse = await app.handle(
+			adminRequest("/admin/keys/key-1", { method: "DELETE" }),
+		);
+		expect(deleteKeyResponse.status).toBe(200);
+		expect(await deleteKeyResponse.json()).toEqual({ success: true });
+
+		const deleteUserResponse = await app.handle(
+			adminRequest("/admin/users/user-1", { method: "DELETE" }),
+		);
+		expect(deleteUserResponse.status).toBe(200);
 	});
 
 	test("maps domain and validation errors to safe responses", async () => {

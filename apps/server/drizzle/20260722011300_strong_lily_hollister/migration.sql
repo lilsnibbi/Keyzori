@@ -1,0 +1,1 @@
+ALTER TABLE "User" ADD COLUMN "customFields" jsonb DEFAULT '{}' NOT NULL;
