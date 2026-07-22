@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package.json bun.lock tsconfig.json bunfig.toml LICENSE NOTICE ./
 COPY apps/server/package.json ./apps/server/
 COPY apps/sdk/package.json ./apps/sdk/
+COPY apps/dash/package.json ./apps/dash/
 
 RUN bun install --frozen-lockfile --ignore-scripts
 
