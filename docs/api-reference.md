@@ -163,7 +163,11 @@ Missing or invalid credentials return `401`:
 
 Restrict these routes at the network layer in production even when header authentication is enabled.
 
-## User administration
+The optional standalone dashboard is a server-side client of these routes. It keeps `X-Admin-Key` out of the browser and exposes only its allowlisted customer and license proxy endpoints.
+
+## Customer administration
+
+Customer records use `/admin/users` for backward-compatible API naming. Their custom fields are administrative-only and are distinct from client-visible license custom fields.
 
 ### `POST /admin/users`
 
@@ -174,11 +178,15 @@ Request:
 ```json
 {
   "email": "owner@example.com",
-  "name": "Example Owner"
+  "name": "Example Owner",
+  "customFields": {
+    "company": "Example Co",
+    "accountId": "acct_123"
+  }
 }
 ```
 
-The email must be valid and no longer than 254 characters. The name must be 1–200 characters. The application trims both fields and lowercases the email. PostgreSQL enforces unique email addresses.
+The email must be valid and no longer than 254 characters. The name must be 1–200 characters. `customFields` is an optional JSON object and defaults to `{}`. The application trims both text fields and lowercases the email. PostgreSQL enforces unique email addresses.
 
 Response `201`:
 
@@ -187,6 +195,10 @@ Response `201`:
   "id": "01234567-89ab-cdef-0123-456789abcdef",
   "email": "owner@example.com",
   "name": "Example Owner",
+  "customFields": {
+    "company": "Example Co",
+    "accountId": "acct_123"
+  },
   "createdAt": "2026-07-18T10:00:00.000Z"
 }
 ```
@@ -198,6 +210,18 @@ Possible responses: `201`, `400`, `401`, or `500`. Owner email addresses must be
 Returns all owners in newest-first order.
 
 Response `200` is an array of the user object shown above. Possible responses: `200`, `401`, or `500`.
+
+### `GET /admin/users/:id`
+
+Returns one owner by internal ID. Possible responses: `200`, `401`, `404`, or `500`.
+
+### `PATCH /admin/users/:id`
+
+Updates an owner's `email`, `name`, `customFields`, or any combination of them. Email normalization and uniqueness rules are the same as creation. Customer custom fields are administrative metadata and are not returned by the license handshake; use license custom fields for client-visible data. Possible responses: `200`, `400`, `401`, `404`, or `500`.
+
+### `DELETE /admin/users/:id`
+
+Permanently deletes the owner. PostgreSQL also deletes every license owned by that user through the configured cascade. Response `200` is `{ "success": true }`. Possible responses: `200`, `401`, `404`, or `500`.
 
 ## License administration
 
@@ -233,7 +257,7 @@ Request:
 | `limitConcurrent` | No | `0` | Non-negative integer; `0` is unlimited. |
 | `limitUsage` | No | `0` | Positive for `USAGE`; otherwise normally `0`. |
 | `trialDurationMin` | No | `0` | Non-negative integer; starts on first successful handshake. |
-| `customFields` | No | `{}` | JSON object returned by successful handshakes. |
+| `customFields` | No | `{}` | JSON object returned by successful handshakes. Values may contain JSON strings, numbers, booleans, `null`, arrays, or nested objects. |
 | `expiresAt` | Conditional | `null` | Future ISO timestamp required only for `SUBSCRIPTION`. |
 
 Response `201`:
@@ -288,13 +312,23 @@ Returns all licenses in newest-first order. The shape matches the creation respo
 
 Possible responses: `200`, `401`, or `500`.
 
+### `GET /admin/keys/:id`
+
+Returns one masked license record by internal ID. Possible responses: `200`, `401`, `404`, or `500`.
+
+### `PUT /admin/keys/:id`
+
+Updates one or more mutable license fields: owner, type, limits, trial duration, custom fields, expiry, or revoked state. Changing away from `SUBSCRIPTION` clears expiry when it is omitted; changing to `SUBSCRIPTION` requires a future `expiresAt`. Response `200` is the updated masked license. Possible responses: `200`, `400`, `401`, `404`, or `500`.
+
 ### `PATCH /admin/keys/:id`
 
 Marks a license as revoked. The path uses the internal key ID, not the `sk_...` secret.
 
 Response `200` is the updated license object with a masked `key` and `revoked: true`. Possible responses: `200`, `401`, `404`, or `500`.
 
-There is currently no un-revoke or delete route.
+### `DELETE /admin/keys/:id`
+
+Permanently deletes a license and its associated registration mappings and allowlists. Response `200` is `{ "success": true }`. Possible responses: `200`, `401`, `404`, or `500`.
 
 ## Documentation routes
 

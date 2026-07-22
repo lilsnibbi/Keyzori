@@ -46,7 +46,7 @@ keyzori-admin create-user --email owner@example.com --name "Example Owner"
 | `-e`, `--email <email>` | Yes | Valid email, maximum 254 characters. |
 | `-n`, `--name <name>` | Yes | Non-empty name, maximum 200 characters after trimming. |
 
-Success prints the created user as formatted JSON with `id`, `email`, `name`, and `createdAt`.
+Success prints the created user as formatted JSON with `id`, `email`, `name`, an empty `customFields` object, and `createdAt`. Customer custom fields can be managed through the dashboard or admin HTTP API; the CLI does not currently accept them.
 
 ## `list-users`
 
@@ -98,7 +98,7 @@ Output columns are `ID`, masked `Key`, `User`, `Type`, and `Revoked`. If there a
 
 ## `revoke-key`
 
-Permanently marks a license as revoked.
+Marks a license as revoked. The CLI does not expose restoration; the dashboard or `PUT /admin/keys/:id` can set `revoked` back to `false`.
 
 ```powershell
 keyzori-admin revoke-key --id <KEY_ID>

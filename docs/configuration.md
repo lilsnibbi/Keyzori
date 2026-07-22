@@ -32,10 +32,28 @@ Only enable proxy trust when direct access to Keyzori is blocked and your proxy 
 1. Generate a new random value with at least 32 characters.
 2. Set the new value as `ADMIN_API_KEY`.
 3. Put the previous value in `ADMIN_API_KEYS` and deploy.
-4. Update every CLI or administrative client.
+4. Update the dashboard and every direct admin API client. The CLI does not use this credential.
 5. Remove the previous value from `ADMIN_API_KEYS` and deploy again.
 
 Every value in `ADMIN_API_KEYS` must meet the same validation rules as the primary key.
+
+## Dashboard variables
+
+The standalone dashboard uses its own environment and never connects directly to PostgreSQL or Redis.
+
+| Variable | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `KEYZORI_SERVER_URL` | Yes | — | Keyzori server origin. HTTPS is required outside loopback unless the private-network override is enabled. |
+| `KEYZORI_AUTH_PASS` | Yes | — | Dashboard login password with at least 16 characters. It must differ from the admin API key. |
+| `KEYZORI_ADMIN_KEY` | Yes | — | Server `ADMIN_API_KEY` used only by the dashboard's server-side API proxy. |
+| `HOST` | No | `0.0.0.0` | Dashboard bind address. |
+| `PORT` | No | `3100` | Dashboard listen port. |
+| `KEYZORI_SECURE_COOKIES` | No | `true` | Secure-cookie and HSTS policy. Disable only for loopback HTTP development. |
+| `KEYZORI_SESSION_TTL_MINUTES` | No | `480` | Fixed in-memory session lifetime from 5 to 1440 minutes. |
+| `KEYZORI_UPSTREAM_TIMEOUT_MS` | No | `10000` | Upstream API timeout from 1000 to 60000 milliseconds. |
+| `KEYZORI_ALLOW_INSECURE_SERVER` | No | `false` | Allows an HTTP server URL outside loopback for a trusted private network. |
+
+See the [dashboard guide](../apps/dash/README.md) for its complete security model and standalone run commands.
 
 ## CLI configuration
 

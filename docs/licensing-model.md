@@ -63,6 +63,8 @@ Whitelist checks run before dynamic registration limits. The bundled CLI and HTT
 
 Do not store secrets in custom fields. They are returned to every application instance holding the license secret and are visible to administrators.
 
+Customers have a separate `customFields` object for operator-only metadata such as billing IDs, company names, or internal notes. Customer fields are available through the admin API and dashboard but are never returned by handshakes or the SDK.
+
 ## Validation order
 
 At a high level, the server:
@@ -80,6 +82,6 @@ If a new session fails after Redis admission, Keyzori removes that session befor
 
 ## Revocation and secret storage
 
-Revocation is permanent through the current API. A revoked secret fails initial validation and the next heartbeat.
+Revocation immediately blocks initial validation and the next heartbeat. Administrators can restore a revoked license by setting `revoked` to `false` through `PUT /admin/keys/:id` or the dashboard editor; the CLI exposes revocation but not restoration.
 
 New secrets are generated as `sk_` plus a UUIDv7 value. PostgreSQL stores a SHA-256 digest and a display prefix, not the full secret. The committed migration backfills legacy rows, enforces non-null digests and prefixes, and drops the plaintext column.
