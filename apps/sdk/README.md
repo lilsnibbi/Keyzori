@@ -37,7 +37,7 @@ const client = new LicenseClient({
 });
 
 client.events.on("ready", (customFields) => {
-	console.info("License ready", customFields);
+	console.info("License tier", customFields.tier);
 });
 
 client.events.on("license:revoked", (reason) => {
@@ -55,6 +55,8 @@ process.once("SIGINT", async () => {
 
 Attach event listeners before `initialize()` so the initial `ready` event cannot be missed.
 
+`initialize()` returns the license's client-visible `JsonObject` custom fields. These are separate from administrative customer custom fields, which the server never sends through a handshake. Do not place secrets in either metadata object.
+
 ## Lifecycle at a glance
 
 ```text
@@ -71,6 +73,8 @@ new client → initialize → validate → active heartbeat loop → destroy →
 | repeated `destroy()` | Safe; no duplicate cleanup is performed |
 
 Requests have a timeout and heartbeats never overlap.
+
+The package's only runtime export is `LicenseClient`. Type-only exports include `LicenseClientConfig`, lifecycle event types, key/log-level unions, and the recursive `JsonObject`, `JsonValue`, and `JsonPrimitive` types.
 
 Remote server URLs must use HTTPS; loopback HTTP remains available for local development. Success and error responses are bounded internally. Consumer event-listener exceptions are contained so they cannot interrupt license-state enforcement.
 

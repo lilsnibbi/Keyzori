@@ -3,6 +3,7 @@ import { EventBroker } from "../core/EventBroker";
 import { NetworkClient } from "../core/NetworkClient";
 import * as publicApi from "../index";
 import { LicenseClient } from "../index";
+import type { JsonObject, JsonValue } from "../index";
 
 describe("SDK Client Core", () => {
 	let originalFetch: typeof global.fetch;
@@ -21,6 +22,14 @@ describe("SDK Client Core", () => {
 
 	it("exports only LicenseClient at runtime", () => {
 		expect(Object.keys(publicApi)).toEqual(["LicenseClient"]);
+	});
+
+	it("exports recursive JSON custom-field types without adding runtime exports", () => {
+		const nested: JsonValue = ["export", true, 3, null, { region: "au" }];
+		const fields: JsonObject = { features: nested };
+		expect(fields).toEqual({
+			features: ["export", true, 3, null, { region: "au" }],
+		});
 	});
 
 	it("initializes successfully and emits ready", async () => {
