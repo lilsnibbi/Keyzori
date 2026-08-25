@@ -162,15 +162,16 @@ export class DrizzleActivityRepository implements IActivityRepository {
 		// A transaction owns one connection, so these deletes must run in
 		// sequence; issuing them concurrently wedges the transaction.
 		return await this.db.transaction(async (transaction) => {
-			const events = await transaction
-				.delete(activityEvents)
-				.where(lt(activityEvents.createdAt, before))
-				.returning({ id: activityEvents.id });
-			const buckets = await transaction
-				.delete(activityMinuteBuckets)
-				.where(lt(activityMinuteBuckets.minute, before))
-				.returning({ minute: activityMinuteBuckets.minute });
-			return events.length + buckets.length;
+			// Counting inside the CTE keeps the deleted set in Postgres. A plain
+			// DELETE ... RETURNING materializes every expired row client-side, and
+			// a retention window's worth of ids spikes heap on each daily prune.
+			const events = await transaction.execute<{ count: number }>(
+				sql`with deleted as (delete from ${activityEvents} where ${lt(activityEvents.createdAt, before)} returning 1) select count(*)::int as count from deleted`,
+			);
+			const buckets = await transaction.execute<{ count: number }>(
+				sql`with deleted as (delete from ${activityMinuteBuckets} where ${lt(activityMinuteBuckets.minute, before)} returning 1) select count(*)::int as count from deleted`,
+			);
+			return (events[0]?.count ?? 0) + (buckets[0]?.count ?? 0);
 		});
 	}
 }
