@@ -23,7 +23,7 @@ The API serves `/health`, `/ready`, and `/docs` on `KEYZORI_SERVER_PORT`.
 | `POST /v1/usage` | Session plus meter event | Atomically consume named-meter units. |
 | `POST /v1/deactivate` | `sessionToken`, `deviceId` | Release a session immediately. |
 
-Only activation receives the full secret. See the [runtime flow](../../docs/runtime-flow.md) and [API reference](../../docs/api-reference.md).
+Only activation receives the full secret. See the [runtime flow](https://github.com/lilsnibbi/Keyzori/wiki/Runtime-Flow) and [API reference](https://github.com/lilsnibbi/Keyzori/wiki/API-Reference).
 
 ## Operator surfaces
 
@@ -59,4 +59,4 @@ bun run docker:build
 docker run --env-file .env -p 3000:3000 keyzori-license-server
 ```
 
-The final pinned distroless image is non-root and contains no Bun installation, `node_modules`, or second CLI executable. See [configuration](../../docs/configuration.md) and [deployment](../../docs/deployment.md).
+The final pinned distroless image is non-root and contains no Bun installation, `node_modules`, or second CLI executable. See [configuration](https://github.com/lilsnibbi/Keyzori/wiki/Configuration) and [deployment](https://github.com/lilsnibbi/Keyzori/wiki/Deployment).

@@ -91,9 +91,19 @@ Monorepo: `apps/server` (API + CLI + migrations), `apps/sdk` (publishable `keyzo
 
 ### Contract surfaces to keep in sync
 
-A behavior change usually touches several of: `controllers/validation.ts`, the SDK (`apps/sdk/src/core/`), CLI commands (`src/cli/commands/`), `docs/api-reference.md`, `docs/cli-reference.md`, `docs/sdk-reference.md`, `docs/configuration.md`, `.env.example`, and `apps/server/.env.example`.
+A behavior change usually touches several of: `controllers/validation.ts`, the SDK (`apps/sdk/src/core/`), CLI commands (`src/cli/commands/`), the wiki pages `API-Reference`, `CLI-Reference`, `SDK-Reference`, `Configuration` (see `Wiki` below), `.env.example`, and `apps/server/.env.example`.
 
 Versions in the root, server, and SDK `package.json` must match and all declare Apache-2.0 — `scripts/verifyRelease.ts` (`bun run release:verify`) enforces this.
+
+### Wiki
+
+Prose documentation lives in the GitHub wiki (<https://github.com/lilsnibbi/Keyzori/wiki>), not in this repository. The wiki is its own git repository:
+
+```bash
+git clone https://github.com/lilsnibbi/Keyzori.wiki.git
+```
+
+Page files are flat and named after the page (`API-Reference.md` renders as "API Reference" at `/wiki/API-Reference`); `Home.md` is the entry point and `_Footer.md` the shared footer; GitHub renders its own page index, so do not add a `_Sidebar.md`. Links between pages use the bare page name (`[Deployment](Deployment)`); links back into this repository must be absolute URLs. Images stay in `.github/assets/` here and are referenced from the wiki by raw URL. A documentation change ships as a wiki commit, separate from the code commit.
 
 ### Test conventions
 

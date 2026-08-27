@@ -4,7 +4,7 @@
 
 **Typed license activation for Bun and Node.js applications.**
 
-[`Project`](../../README.md) | [`Full SDK reference`](../../docs/sdk-reference.md) | [`API reference`](../../docs/api-reference.md)
+[`Project`](../../README.md) | [`Full SDK reference`](https://github.com/lilsnibbi/Keyzori/wiki/SDK-Reference) | [`API reference`](https://github.com/lilsnibbi/Keyzori/wiki/API-Reference)
 
 </div>
 

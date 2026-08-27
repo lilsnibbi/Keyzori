@@ -28,7 +28,7 @@ This document is the release gate for operating Keyzori with real customer licen
 These are deployment evidence, not repository code changes:
 
 1. Configure secret-safe logs, platform metrics, and alert thresholds for the chosen runtime.
-2. Exercise the [operations runbook](../docs/operations.md), including backup restore and migration rollback, against production-sized data.
+2. Exercise the [operations runbook](https://github.com/lilsnibbi/Keyzori/wiki/Operations), including backup restore and migration rollback, against production-sized data.
 3. Run load, soak, rate-limit, and dependency-failure tests through the intended TLS proxy and dependency topology.
 4. Record recovery objectives, on-call ownership, data retention, privacy obligations, and the exact release image tag.
 5. Review the release against the [compatibility and release policy](RELEASE_POLICY.md).

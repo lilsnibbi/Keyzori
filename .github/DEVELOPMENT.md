@@ -30,7 +30,7 @@ Turborepo executes each task inside its owning app and caches successful build a
 apps/
   server/   HTTP API, CLI, migrations, and unified image
   sdk/      publishable application integration SDK
-docs/       cross-application architecture and operations guides
+wiki/       working copy of the GitHub wiki (separate repo, git-ignored)
 tests/      cross-application product-flow tests
 ```
 
