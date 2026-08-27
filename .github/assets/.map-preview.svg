@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2020 1030" width="2020" height="1030" font-family="Segoe UI, system-ui, sans-serif">
+<title>Keyzori system map: clients, services, adapters, and stores</title>
 <rect width="2020" height="1030" fill="#ffffff"/>
 <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#495057"/></marker></defs>
 <polyline points="290,242 400,470" fill="none" stroke="#495057" stroke-width="2" marker-end="url(#a)"/>
