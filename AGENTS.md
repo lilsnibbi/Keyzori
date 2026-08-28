@@ -9,15 +9,15 @@ Keyzori is a self-hosted software-license manager built as a Bun and TypeScript 
 - `apps/server`: Elysia API, CLI, PostgreSQL, Redis, and Stripe integration.
 - `apps/sdk`: public typed client SDK.
 - `tests`: cross-package and compiled-artifact tests.
-- `docs`: product, API, deployment, and operations documentation.
+- `.github/assets`: README and wiki image assets. Prose documentation lives in the [GitHub wiki](https://github.com/lilsnibbi/Keyzori/wiki).
 
-Read `README.md`, `CONTRIBUTING.md`, and `docs/architecture.md` before making broad or architectural changes.
+Read `README.md`, `CONTRIBUTING.md`, and the [Architecture wiki page](https://github.com/lilsnibbi/Keyzori/wiki/Architecture) before making broad or architectural changes.
 
 ## Working rules
 
 - Use Bun 1.3.14 or newer. Use `bun`, `bunx`, and `bun:test`; do not introduce npm, pnpm, yarn, ESLint, or Prettier workflows.
 - Preserve existing user changes. Keep edits focused and do not revert unrelated work.
-- Respect the domain, application, infrastructure, and controller layer boundaries described in `docs/architecture.md`.
+- Respect the domain, application, infrastructure, and controller layer boundaries described in the [Architecture wiki page](https://github.com/lilsnibbi/Keyzori/wiki/Architecture).
 - Keep public HTTP, CLI, SDK, configuration, database, and documentation contracts synchronized.
 - Add or update tests for behavior changes. Include regression tests for bug fixes.
 - Treat licensing, authentication, session, metering, Stripe, and migration changes as security-sensitive.
@@ -25,7 +25,7 @@ Read `README.md`, `CONTRIBUTING.md`, and `docs/architecture.md` before making br
 - Do not weaken validation, token binding, concurrency controls, idempotency, secret redaction, or transactional guarantees without explicit approval.
 - Generate schema migrations with `bun run db:generate`; review generated SQL and commit the migration with its schema change.
 - Avoid `db:push` for committed development or production migrations.
-- Update relevant docs and examples when user-visible behavior changes.
+- Update relevant documentation and examples when user-visible behavior changes; prose documentation lives in the separate [wiki repository](https://github.com/lilsnibbi/Keyzori/wiki), so it ships as its own commit.
 
 ## Style
 

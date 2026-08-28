@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import type { SQL } from "drizzle-orm";
+import { PgDialect } from "drizzle-orm/pg-core";
 import type { Database } from "../db";
 import type { LicenseMeter, UsageLedgerEntry } from "../domain/entities";
 import { hashUsageEventId } from "../domain/usageEvent";
@@ -250,27 +252,25 @@ describe("DrizzleMeterRepository", () => {
 });
 
 describe("DrizzleActivityRepository", () => {
-	test("prunes both tables without overlapping queries on one transaction", async () => {
+	test("prunes both tables in Postgres without materializing deleted rows", async () => {
 		let running = 0;
 		let peak = 0;
-		const rows = [[{ id: "event-1" }], [{ minute: new Date(0) }]];
-
-		class TrackedDelete {
-			constructor(private readonly result: unknown[]) {}
-			where() {
-				return this;
-			}
-			async returning() {
-				running += 1;
-				peak = Math.max(peak, running);
-				await Bun.sleep(1);
-				running -= 1;
-				return this.result;
-			}
-		}
+		const dialect = new PgDialect();
+		const counts = [[{ count: 2 }], [{ count: 3 }]];
+		const statements: string[] = [];
 
 		const transaction = {
-			delete: () => new TrackedDelete(rows.shift() ?? []),
+			delete: () => {
+				throw new Error("prune must not stream deleted rows to the client");
+			},
+			execute: async (query: SQL) => {
+				running += 1;
+				peak = Math.max(peak, running);
+				statements.push(dialect.sqlToQuery(query).sql);
+				await Bun.sleep(1);
+				running -= 1;
+				return counts.shift() ?? [];
+			},
 		};
 		const database = {
 			transaction: async <T>(operation: (scoped: unknown) => Promise<T>) =>
@@ -280,8 +280,12 @@ describe("DrizzleActivityRepository", () => {
 			database as unknown as Database,
 		);
 
-		expect(await repository.pruneBefore(new Date(0))).toBe(2);
+		expect(await repository.pruneBefore(new Date(0))).toBe(5);
 		expect(peak).toBe(1);
+		expect(statements).toHaveLength(2);
+		for (const statement of statements) {
+			expect(statement).toContain("count(*)::int");
+		}
 	});
 });
 

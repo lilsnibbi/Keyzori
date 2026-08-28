@@ -1,8 +1,8 @@
 <div align="center">
 
-<img width="2560" height="720" alt="banner" src="https://github.com/lilsnibbi/Keyzori/blob/main/docs/img/banner.png" />
+<img width="2560" height="720" alt="banner" src="https://raw.githubusercontent.com/lilsnibbi/Keyzori/main/.github/assets/banner.png" />
 
-[`📖 Documentation`](docs/README.md) · [`🌐 API`](docs/api-reference.md) · [`🔧 SDK`](apps/sdk/README.md) · [`💻 Deployment`](docs/deployment.md)
+[`📖 Documentation`](https://github.com/lilsnibbi/Keyzori/wiki) · [`🌐 API`](https://github.com/lilsnibbi/Keyzori/wiki/API-Reference) · [`🔧 SDK`](apps/sdk/README.md) · [`💻 Deployment`](https://github.com/lilsnibbi/Keyzori/wiki/Deployment)
 
 <br />
 
@@ -67,7 +67,7 @@ await license.consume({
 await license.deactivate();
 ```
 
-Only activation sends the license secret. Automatic heartbeats, usage, and deactivation use a bound server-issued session token. See the [SDK reference](docs/sdk-reference.md) and [runtime flow](docs/runtime-flow.md).
+Only activation sends the license secret. Automatic heartbeats, usage, and deactivation use a bound server-issued session token. See the [SDK reference](https://github.com/lilsnibbi/Keyzori/wiki/SDK-Reference) and [runtime flow](https://github.com/lilsnibbi/Keyzori/wiki/Runtime-Flow).
 
 ## Docker
 
@@ -101,15 +101,21 @@ Stripe controls and webhook processing are absent unless both `KEYZORI_STRIPE_SE
 
 ## Documentation
 
-- [Licensing model](docs/licensing-model.md)
-- [Product flow](docs/product-flow.md)
-- [HTTP API](docs/api-reference.md)
-- [Admin CLI](docs/cli-reference.md)
-- [Configuration](docs/configuration.md)
-- [Deployment](docs/deployment.md)
-- [Operations](docs/operations.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [Architecture](docs/architecture.md)
+Full documentation lives in the **[Keyzori wiki](https://github.com/lilsnibbi/Keyzori/wiki)**.
+
+| | Guide | What it covers |
+| :--: | :-- | :-- |
+| 💻 | [Deployment](https://github.com/lilsnibbi/Keyzori/wiki/Deployment) | Compose, standalone container, reverse proxy, releases, native binary |
+| ⚙️ | [Configuration](https://github.com/lilsnibbi/Keyzori/wiki/Configuration) | Every `KEYZORI_` variable, with defaults and accepted ranges |
+| 🔑 | [Licensing model](https://github.com/lilsnibbi/Keyzori/wiki/Licensing-Model) | The four types, effective status, limits, allowlists, meters |
+| 🔄 | [Product flow](https://github.com/lilsnibbi/Keyzori/wiki/Product-Flow) | Operator setup, application runtime, operator feedback loop |
+| ⏱️ | [Runtime flow](https://github.com/lilsnibbi/Keyzori/wiki/Runtime-Flow) | Activation, session binding, heartbeat, validation order |
+| 🏗️ | [Architecture](https://github.com/lilsnibbi/Keyzori/wiki/Architecture) | One binary, three entrypoints, layer boundaries, storage |
+| 🔧 | [SDK reference](https://github.com/lilsnibbi/Keyzori/wiki/SDK-Reference) | The `keyzori` package — config, methods, events, errors |
+| 🌐 | [HTTP API](https://github.com/lilsnibbi/Keyzori/wiki/API-Reference) | Every route, request/response shape, and error code |
+| 💾 | [Admin CLI](https://github.com/lilsnibbi/Keyzori/wiki/CLI-Reference) | `keyzori admin` commands for customers, licenses, access, meters |
+| 📊 | [Operations](https://github.com/lilsnibbi/Keyzori/wiki/Operations) | Monitoring, backup/restore, secret rotation, incident playbooks |
+| 🩺 | [Troubleshooting](https://github.com/lilsnibbi/Keyzori/wiki/Troubleshooting) | Symptom-first fixes for startup, licensing, Stripe, migrations |
 
 ## Community and license
 
