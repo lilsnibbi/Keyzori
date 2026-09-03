@@ -29,7 +29,7 @@ jobs:
     steps:
       - name: Mint release app token
         id: token
-        uses: actions/create-github-app-token@67018ade9dd2c9d0d1b76b8dbe1eae3f19eeb6cd # v2.1.4
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
