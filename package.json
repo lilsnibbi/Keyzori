@@ -1,6 +1,6 @@
 {
 	"name": "keyzori-workspace",
-	"version": "0.4.1",
+	"version": "0.4.2",
 	"license": "Apache-2.0",
 	"description": "Self-hosted software license management server with an operator CLI and client SDK.",
 	"author": "Keyzori contributors",
@@ -66,6 +66,9 @@
 		"docker:build:server": "bun run docker:build",
 		"publish:packages": "bun run --cwd apps/sdk publish:package",
 		"publish:sdk": "bun run --cwd apps/sdk publish:package",
+		"release": "bun run scripts/release.ts",
+		"release:sync": "bun run scripts/syncVersions.ts",
+		"release:tag": "bun run scripts/tag.ts",
 		"release:verify": "bun run scripts/verifyRelease.ts",
 		"lint": "bunx @biomejs/biome check .",
 		"format": "bunx @biomejs/biome format --write .",
